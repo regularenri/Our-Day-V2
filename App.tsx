@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
@@ -32,7 +32,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Router basename="/Our-Day-V2">
+    <Router>
       <ScrollToTop />
       <div className="bg-linen min-h-screen text-charcoal font-sans selection:bg-gold selection:text-linen overflow-x-hidden">
         <CustomCursor />
