@@ -32,7 +32,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/Our-Day-V2">
       <ScrollToTop />
       <div className="bg-linen min-h-screen text-charcoal font-sans selection:bg-gold selection:text-linen overflow-x-hidden">
         <CustomCursor />
