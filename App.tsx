@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import Stories from './components/Stories';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
+import ScrollToTop from './components/ScrollToTop';
+import Home from './pages/Home';
+import Servizi from './pages/Servizi';
+import Galleria from './pages/Galleria';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -30,16 +32,19 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-linen min-h-screen text-charcoal font-sans selection:bg-gold selection:text-linen overflow-x-hidden">
-      <CustomCursor />
-      <Navbar />
-      <main>
-        <Hero />
-        <Services />
-        <Stories />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <ScrollToTop />
+      <div className="bg-linen min-h-screen text-charcoal font-sans selection:bg-gold selection:text-linen overflow-x-hidden">
+        <CustomCursor />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/servizi" element={<Servizi />} />
+          <Route path="/galleria" element={<Galleria />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 };
 

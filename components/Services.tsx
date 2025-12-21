@@ -1,13 +1,16 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ServiceItem } from '../types';
+import AnimatedTitle from './AnimatedTitle';
 
 const services: ServiceItem[] = [
   {
     id: 's1',
     no: '01',
     name: 'Live Painting',
-    details: 'Olio su tela, dipinto dal vivo durante la cerimonia.',
+    details: 'Catturiamo l\'essenza del vostro amore su tela, dal vivo, trasformando le emozioni del momento in un\'opera d\'arte eterna che prenderà vita sotto i vostri occhi.',
     price: '€ 2.800',
     image: 'https://picsum.photos/seed/art/600/400'
   },
@@ -15,7 +18,7 @@ const services: ServiceItem[] = [
     id: 's2',
     no: '02',
     name: 'Wedding Miniatures',
-    details: 'Sculture in scala 1:12 del luogo o della torta.',
+    details: 'Preziose sculture in scala 1:12 che riproducono fedelmente la location o la torta nuziale, piccoli capolavori di precisione per custodire un grande ricordo.',
     price: '€ 1.200',
     image: 'https://picsum.photos/seed/mini/600/400'
   },
@@ -23,94 +26,197 @@ const services: ServiceItem[] = [
     id: 's3',
     no: '03',
     name: 'Resin Bouquets',
-    details: 'Incapsulamento floreale in blocchi di resina UV.',
+    details: 'Preserviamo la delicatezza del vostro bouquet incapsulandolo in blocchi di resina cristallina, trasformando i fiori del vostro sì in gioielli di design.',
     price: '€ 850',
     image: 'https://picsum.photos/seed/resin/600/400'
+  },
+  {
+    id: 's4',
+    no: '04',
+    name: 'Luxury Stationery',
+    details: 'Partecipazioni, menu e segnaposto realizzati con carte pregiate, calligrafia a mano e dettagli in oro, per annunciare il vostro evento con un tocco di esclusività.',
+    price: '€ 500',
+    image: 'https://picsum.photos/seed/stat/600/400'
+  },
+  {
+    id: 's5',
+    no: '05',
+    name: 'Event Styling',
+    details: 'Curiamo l\'estetica del vostro evento in ogni minimo dettaglio, creando atmosfere suggestive e coerenti che parlano di voi e del vostro stile unico.',
+    price: 'Su preventivo',
+    image: 'https://picsum.photos/seed/event/600/400'
+  },
+  {
+    id: 's6',
+    no: '06',
+    name: 'Custom Favors',
+    details: 'Bomboniere e cadeau de mariage personalizzati, oggetti di design pensati per ringraziare i vostri ospiti con un dono che non verrà dimenticato.',
+    price: 'Su preventivo',
+    image: 'https://picsum.photos/seed/favor/600/400'
   }
 ];
 
-const Services: React.FC = () => {
-  const [hoveredService, setHoveredService] = useState<ServiceItem | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const listRef = useRef<HTMLDivElement>(null);
+interface ServicesProps {
+  isPreview?: boolean;
+}
+
+const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  // GSAP QuickTo refs
+  const xTo = useRef<gsap.QuickToFunc>();
+  const yTo = useRef<gsap.QuickToFunc>();
+
+  useEffect(() => {
+    // Only setup GSAP on desktop
+    if (window.innerWidth < 768 || !previewRef.current) return;
+
+    // Center the element on the cursor
+    gsap.set(previewRef.current, { xPercent: -50, yPercent: -50 });
+
+    xTo.current = gsap.quickTo(previewRef.current, "x", { duration: 0.6, ease: "power3" });
+    yTo.current = gsap.quickTo(previewRef.current, "y", { duration: 0.6, ease: "power3" });
+
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    // Calculate position relative to the viewport or container
-    // We'll use viewport client coordinates for fixed positioning of the preview
-    setMousePosition({ x: e.clientX, y: e.clientY });
+    if (xTo.current && yTo.current) {
+      xTo.current(e.clientX);
+      yTo.current(e.clientY);
+    }
   };
 
+  const handleInteraction = (id: string, type: 'enter' | 'leave' | 'click') => {
+    if (type === 'enter') {
+      setActiveId(id);
+      // Animate preview in
+      if (previewRef.current) {
+        gsap.to(previewRef.current, { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" });
+      }
+    } else if (type === 'leave') {
+      setActiveId(null);
+      // Animate preview out
+      if (previewRef.current) {
+        gsap.to(previewRef.current, { scale: 0, opacity: 0, duration: 0.3, ease: "power2.in" });
+      }
+    } else if (type === 'click') {
+      setActiveId(prev => prev === id ? null : id);
+    }
+  };
+
+  const visibleServices = isPreview ? services.slice(0, 3) : services;
+  const activeService = services.find(s => s.id === activeId);
+
   return (
-    <section className="py-20 px-6 md:px-12 md:py-32 bg-linen relative z-20" onMouseMove={handleMouseMove} ref={listRef}>
+    <section
+      className="py-20 px-6 md:px-12 md:py-32 bg-linen relative z-20 overflow-hidden"
+      onMouseMove={handleMouseMove}
+      ref={containerRef}
+    >
       <div className="max-w-[1400px] mx-auto">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-serif text-5xl md:text-7xl mb-16 text-charcoal"
-        >
-          i nostri servizi
-        </motion.h2>
+        <AnimatedTitle
+          tag="h2"
+          text="i nostri servizi"
+          className="font-serif text-5xl md:text-7xl mb-12 md:mb-16 text-charcoal"
+        />
 
-        {/* Table Header */}
-        <div className="grid grid-cols-12 gap-4 pb-4 border-b border-charcoal/20 text-xs uppercase tracking-widest text-charcoal/50 font-medium mb-4">
-          <div className="col-span-1 hidden md:block">NO.</div>
-          <div className="col-span-6 md:col-span-5">SERVIZIO</div>
-          <div className="col-span-3 hidden md:block">DETTAGLI</div>
-          <div className="col-span-6 md:col-span-3 text-right">A PARTIRE DA</div>
+        <div className="flex flex-col border-t border-charcoal/20">
+          {visibleServices.map((service) => {
+            const isActive = activeId === service.id;
+
+            return (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="group border-b border-charcoal/20 cursor-pointer overflow-hidden relative"
+                onMouseEnter={() => window.innerWidth >= 768 && handleInteraction(service.id, 'enter')}
+                onMouseLeave={() => window.innerWidth >= 768 && handleInteraction(service.id, 'leave')}
+                onClick={() => window.innerWidth < 768 && handleInteraction(service.id, 'click')}
+              >
+                {/* Background hover effect (subtle) */}
+                <div className={`absolute inset-0 bg-charcoal/5 transition-transform duration-500 origin-left ${isActive ? 'scale-x-100' : 'scale-x-0'}`} />
+
+                <div className="relative flex flex-col md:flex-row md:items-baseline py-6 md:py-10 px-2 transition-colors duration-300">
+                  {/* Number */}
+                  <div className="text-xs md:text-sm font-sans tracking-widest text-charcoal/50 w-12 md:w-24 mb-2 md:mb-0">
+                    {service.no}
+                  </div>
+
+                  {/* Title & Mobile Accordion Indicator */}
+                  <div className="flex-1 flex justify-between items-center pr-4">
+                    <h3 className="font-serif text-3xl md:text-5xl text-charcoal italic group-hover:pl-4 transition-all duration-300">
+                      {service.name}
+                    </h3>
+                    <div className="md:hidden text-charcoal/60">
+                      <motion.div
+                        animate={{ rotate: isActive ? 45 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 4V20M4 12H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div className="hidden md:block w-32 text-right font-serif text-xl text-charcoal/80">
+                    {service.price}
+                  </div>
+                </div>
+
+                {/* Accordion Semantic Content */}
+                <motion.div
+                  initial={false}
+                  animate={{ height: isActive ? 'auto' : 0, opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="pb-8 pl-0 md:pl-24 max-w-2xl text-charcoal/70 font-sans leading-relaxed text-sm md:text-base pr-4">
+                    {service.details}
+                    <div className="md:hidden mt-4 text-charcoal font-serif">
+                      A partire da {service.price}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* List Items */}
-        <div className="flex flex-col">
-          {services.map((service) => (
-            <motion.div 
-              key={service.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              onMouseEnter={() => setHoveredService(service)}
-              onMouseLeave={() => setHoveredService(null)}
-              className="grid grid-cols-12 gap-4 py-8 md:py-12 border-b border-charcoal/10 items-center cursor-trigger hover:bg-white/40 transition-colors duration-300 px-2 -mx-2 rounded-lg"
+        {/* Discover More Button */}
+        {isPreview && (
+          <div className="mt-16 flex justify-center">
+            <Link
+              to="/servizi"
+              className="group relative inline-flex items-center gap-2 px-8 py-4 bg-transparent border border-charcoal/20 rounded-full overflow-hidden hover:border-charcoal/100 transition-colors duration-300"
             >
-              <div className="col-span-1 hidden md:block font-sans text-xs text-charcoal/40">{service.no}</div>
-              <div className="col-span-6 md:col-span-5">
-                <h3 className="font-serif text-3xl md:text-5xl text-charcoal italic">{service.name}</h3>
-              </div>
-              <div className="col-span-3 hidden md:block font-sans text-sm text-charcoal/70 max-w-[250px]">
-                {service.details}
-              </div>
-              <div className="col-span-6 md:col-span-3 text-right font-serif text-xl md:text-2xl text-charcoal">
-                {service.price}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              <span className="relative z-10 font-sans text-xs uppercase tracking-widest font-medium group-hover:text-linen transition-colors duration-300">
+                Scopri tutti i servizi
+              </span>
+              <div className="absolute inset-0 bg-charcoal translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Floating Image Preview */}
-      <AnimatePresence>
-        {hoveredService && (
-          <motion.div
-            className="pointer-events-none fixed z-30 hidden md:block overflow-hidden rounded-xl shadow-2xl w-[300px] h-[200px]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1,
-              x: mousePosition.x + 40, // Offset from cursor
-              y: mousePosition.y - 100
-            }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 150, damping: 25, mass: 0.1 }}
-          >
-            <img 
-              src={hoveredService.image} 
-              alt={hoveredService.name} 
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
+      {/* GSAP Image Preview (Desktop Only) */}
+      <div
+        ref={previewRef}
+        className="fixed top-0 left-0 pointer-events-none z-30 hidden md:block overflow-hidden rounded-lg shadow-2xl w-[350px] aspect-[4/3] border-4 border-white/50 opacity-0 scale-0 origin-center"
+      >
+        {activeService && (
+          <img
+            src={activeService.image}
+            alt={activeService.name}
+            className="w-full h-full object-cover"
+          />
         )}
-      </AnimatePresence>
+      </div>
     </section>
   );
 };

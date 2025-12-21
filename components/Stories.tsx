@@ -1,75 +1,146 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { Draggable } from 'gsap/draggable';
+import AnimatedTitle from './AnimatedTitle';
+import { horizontalLoop } from '../utils/gsapHelpers';
+
+gsap.registerPlugin(Draggable);
+
+const testimonials = [
+  {
+    id: 1,
+    name: "Giulia & Marco",
+    role: "Sposi - Lago di Como",
+    quote: "Il dipinto dal vivo ha catturato l'anima della nostra cerimonia. Un cimelio che custodiremo per sempre.",
+    avatar: "https://randomuser.me/api/portraits/women/1.jpg"
+  },
+  {
+    id: 2,
+    name: "Elena & Stefano",
+    role: "Sposi - Toscana",
+    quote: "Le miniature sono curate in ogni minimo dettaglio. È come avere un pezzetto di quella giornata magica sempre con noi.",
+    avatar: "https://randomuser.me/api/portraits/men/2.jpg"
+  },
+  {
+    id: 3,
+    name: "Sofia & Davide",
+    role: "Sposi - Costiera Amalfitana",
+    quote: "La conservazione del bouquet in resina è semplicemente stupenda. Un'opera d'arte che decora la nostra nuova casa.",
+    avatar: "https://randomuser.me/api/portraits/women/3.jpg"
+  },
+  {
+    id: 4,
+    name: "Alessia & Riccardo",
+    role: "Sposi - Roma",
+    quote: "Professionalità e talento incredibili. Hanno saputo interpretare i nostri desideri alla perfezione.",
+    avatar: "https://randomuser.me/api/portraits/women/4.jpg"
+  },
+  {
+    id: 5,
+    name: "Chiara & Alessandro",
+    role: "Sposi - Venezia",
+    quote: "Un tocco di classe unico per il nostro matrimonio. Tutti gli ospiti sono rimasti incantati dal live painting.",
+    avatar: "https://randomuser.me/api/portraits/men/5.jpg"
+  },
+  {
+    id: 6,
+    name: "Martina & Luca",
+    role: "Sposi - Portofino",
+    quote: "Hanno reso immortale il momento del nostro primo ballo. Ogni volta che guardiamo il quadro ci emozioniamo.",
+    avatar: "https://randomuser.me/api/portraits/women/6.jpg"
+  }
+];
 
 const Stories: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const proxyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sliderRef.current || !containerRef.current) return;
+
+    const cards = gsap.utils.toArray<HTMLElement>('.testimonial-card');
+
+    const ctx = gsap.context(() => {
+      const loop = horizontalLoop(cards, {
+        repeat: -1,
+        paddingRight: 48,
+        speed: 0.5,
+        paused: false
+      });
+
+      // Draggable logic
+      Draggable.create(proxyRef.current, {
+        type: "x",
+        trigger: sliderRef.current,
+        inertia: true,
+        onDrag: function () {
+          loop.progress(gsap.utils.wrap(0, 1, loop.progress() - (this.deltaX / (cards.length * 400))));
+        },
+        onThrowUpdate: function () {
+          loop.progress(gsap.utils.wrap(0, 1, loop.progress() - (this.deltaX / (cards.length * 400))));
+        },
+        onPress: () => loop.pause(),
+        onRelease: () => loop.play()
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 px-6 md:px-12 bg-white/50">
-      <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16 md:mb-24">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="uppercase text-xs tracking-[0.2em] text-gold mb-4 block font-bold"
-          >
-            Testimonianze
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="font-serif text-5xl md:text-7xl text-charcoal"
-          >
-            Storie di Amore <br/><span className="italic text-sage">e Artigianato</span>
-          </motion.h2>
+    <section ref={containerRef} className="py-24 md:py-32 bg-linen-white overflow-hidden select-none relative">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-16 relative z-10">
+        <span className="uppercase text-xs tracking-[0.2em] text-gold mb-6 block font-bold">
+          Testimonianze
+        </span>
+        <div className="max-w-4xl">
+          <AnimatedTitle
+            tag="h2"
+            text="Non credeteci sulla parola."
+            className="font-serif text-5xl md:text-8xl text-charcoal leading-[0.9] mb-4"
+          />
+          <AnimatedTitle
+            tag="h2"
+            text="Ascoltate chi ci ha scelto."
+            className="font-serif text-5xl md:text-8xl text-charcoal leading-[0.9]"
+          />
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
-          {/* Image Side */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="aspect-[4/5] rounded-t-[10rem] rounded-b-[2rem] overflow-hidden">
-              <img 
-                src="https://picsum.photos/seed/couple/800/1000" 
-                alt="Happy Couple" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-linen rounded-full flex items-center justify-center text-xs uppercase tracking-widest text-charcoal border border-charcoal/10 animate-spin-slow hidden md:flex">
-              Our Day
-            </div>
-          </motion.div>
+      <div className="relative h-[500px] md:h-[600px] mt-12">
+        {/* Proxy for Draggable */}
+        <div ref={proxyRef} className="invisible absolute inset-0" />
 
-          {/* Quote Side */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="flex flex-col justify-center"
-          >
-            <svg className="w-12 h-12 text-gold mb-8 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
-            </svg>
-            <h3 className="font-serif text-3xl md:text-5xl leading-tight mb-8">
-              "Il dipinto dal vivo ha catturato l'anima della nostra cerimonia. Un cimelio che custodiremo per sempre."
-            </h3>
-            <div className="font-sans">
-              <p className="font-bold text-charcoal uppercase tracking-widest text-sm">Giulia & Marco</p>
-              <p className="text-charcoal/60 text-xs mt-1">Lago di Como, Settembre 2023</p>
-            </div>
-            
-            <a 
-               href="https://wa.me/1234567890" 
-               className="mt-12 self-start px-8 py-4 border border-charcoal/20 rounded-full uppercase text-xs tracking-widest hover:bg-charcoal hover:text-white transition-all duration-300"
+        <div
+          ref={sliderRef}
+          className="flex gap-12 absolute top-0 left-0 cursor-grab active:cursor-grabbing h-full items-center px-[5vw]"
+        >
+          {testimonials.map((t) => (
+            <div
+              key={t.id}
+              className="testimonial-card flex-shrink-0 w-[320px] md:w-[450px] bg-white rounded-[3rem] p-10 md:p-14 shadow-sm border border-charcoal/5 flex flex-col justify-between h-[420px] md:h-[500px]"
             >
-              Leggi altre storie
-            </a>
-          </motion.div>
+              <div>
+                <div className="w-16 h-16 rounded-full overflow-hidden mb-10 border border-charcoal/10">
+                  <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+                </div>
+                <p className="font-sans text-charcoal/80 text-xl md:text-2xl leading-relaxed italic">
+                  "{t.quote}"
+                </p>
+              </div>
+
+              <div>
+                <p className="font-serif text-4xl text-gold italic leading-none mb-2">
+                  {t.name}
+                </p>
+                <p className="font-sans text-[11px] uppercase tracking-[0.2em] text-charcoal/40 font-bold">
+                  {t.role}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
