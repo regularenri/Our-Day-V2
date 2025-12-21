@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/Our-Day-V2/',
   plugins: [react()],
   server: {
     host: true, // Expose to network for easier testing on mobile/local

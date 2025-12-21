@@ -7,12 +7,13 @@ Source: https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop/
 export function horizontalLoop(items: any[], config: any) {
     items = gsap.utils.toArray(items);
     config = config || {};
-    let tl = gsap.timeline({ repeat: config.repeat, paused: config.paused, defaults: { ease: "none" }, onReverseComplete: () => tl.totalTime(tl.rawTime() + tl.duration() * 100) }),
-        length = items.length,
+    let tl: gsap.core.Timeline = gsap.timeline({ repeat: config.repeat, paused: config.paused, defaults: { ease: "none" } });
+    // @ts-ignore
+    tl.eventCallback("onReverseComplete", () => tl.totalTime(tl.rawTime() + tl.duration() * 100));
+    let length = items.length,
         startX = items[0].offsetLeft,
         times: any[] = [],
         widths: any[] = [],
-        xPercents: any[] = [],
         curIndex = 0,
         pixelsPerSecond = (config.speed || 1) * 100,
         snap = config.snap === false ? (v: any) => v : gsap.utils.snap(config.snap || 1), // logic to snap to the closest index but de-activated by default
@@ -51,7 +52,7 @@ export function horizontalLoop(items: any[], config: any) {
     tl.times = times;
     tl.progress(1, true).progress(0, true); // pre-render for performance
     if (config.reversed) {
-        tl.vars.onReverseComplete();
+        tl.vars.onReverseComplete?.();
         tl.reverse();
     }
     return tl;

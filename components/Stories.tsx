@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Draggable } from 'gsap/draggable';
+import { Draggable } from 'gsap/all';
 import AnimatedTitle from './AnimatedTitle';
 import { horizontalLoop } from '../utils/gsapHelpers';
 
@@ -80,8 +80,8 @@ const Stories: React.FC = () => {
         onThrowUpdate: function () {
           loop.progress(gsap.utils.wrap(0, 1, loop.progress() - (this.deltaX / (cards.length * 400))));
         },
-        onPress: () => loop.pause(),
-        onRelease: () => loop.play()
+        onPress: () => { loop.pause(); },
+        onRelease: () => { loop.play(); }
       });
 
     }, containerRef);
