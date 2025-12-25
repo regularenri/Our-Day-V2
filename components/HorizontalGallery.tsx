@@ -15,27 +15,27 @@ interface GalleryItem {
 const galleryItems: GalleryItem[] = [
     {
         id: 1,
-        url: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2000&auto=format&fit=crop',
+        url: 'assets/Images/Webp/460896090_1074017383908067_4200850697466321805_n..webp',
         quote: "Ecco cosa possiamo aiutarti a realizzare."
     },
     {
         id: 2,
-        url: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2000&auto=format&fit=crop',
+        url: 'assets/Images/Webp/450347307_851249443567775_1922508133636013123_n..webp',
         quote: "Ogni dettaglio racconta la vostra storia unica."
     },
     {
         id: 3,
-        url: 'https://images.unsplash.com/photo-1465495910483-0d6745778503?q=80&w=2000&auto=format&fit=crop',
+        url: 'assets/Images/Webp/550799572_17994799889825650_6298268683750133622_n..webp',
         quote: "Trasformiamo attimi fugaci in ricordi eterni."
     },
     {
         id: 4,
-        url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000&auto=format&fit=crop',
+        url: 'assets/Images/Webp/545112275_17993923277825650_3693115148974838534_n..webp',
         quote: "La bellezza che merita di essere preservata."
     },
     {
         id: 5,
-        url: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2000&auto=format&fit=crop',
+        url: 'assets/Images/Webp/485511146_1176211547222287_7622745455614453238_n..webp',
         quote: "Un'opera d'arte che parla del vostro amore."
     }
 ];

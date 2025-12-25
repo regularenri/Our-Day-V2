@@ -13,25 +13,20 @@ interface GalleryImage {
 }
 
 const galleryImages: GalleryImage[] = [
-    { id: 1, src: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop', alt: "Wedding 1", offsetY: 0 },
-    { id: 2, src: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800&auto=format&fit=crop', alt: "Wedding 2", offsetY: 80 },
-    { id: 3, src: 'https://images.unsplash.com/photo-1465495910483-0d6745778503?q=80&w=800&auto=format&fit=crop', alt: "Wedding 3", offsetY: 40 },
-    { id: 4, src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop', alt: "Wedding 4", offsetY: 120 },
+    { id: 1, src: 'assets/Images/Webp/338774279_245190851263057_709241014944027128_n..webp', alt: "Wedding Detail 1", offsetY: 0 },
+    { id: 2, src: 'assets/Images/Webp/450347307_851249443567775_1922508133636013123_n..webp', alt: "Wedding Detail 2", offsetY: 80 },
+    { id: 3, src: 'assets/Images/Webp/460896090_1074017383908067_4200850697466321805_n..webp', alt: "Wedding Detail 3", offsetY: 40 },
+    { id: 4, src: 'assets/Images/Webp/485008977_9830080170358193_6052266952024163601_n..webp', alt: "Wedding Detail 4", offsetY: 120 },
 
-    { id: 5, src: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop', alt: "Wedding 5", offsetY: 60 },
-    { id: 6, src: 'https://images.unsplash.com/photo-1517457373958-b7bdd458ad20?q=80&w=800&auto=format&fit=crop', alt: "Wedding 6", offsetY: 0 },
-    { id: 7, src: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?q=80&w=800&auto=format&fit=crop', alt: "Wedding 7", offsetY: 100 },
-    { id: 8, src: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop', alt: "Wedding 8", offsetY: 40 },
+    { id: 5, src: 'assets/Images/Webp/485511146_1176211547222287_7622745455614453238_n..webp', alt: "Wedding Detail 5", offsetY: 60 },
+    { id: 6, src: 'assets/Images/Webp/500778763_3152532351570485_9214239788541518427_n..webp', alt: "Wedding Detail 6", offsetY: 0 },
+    { id: 7, src: 'assets/Images/Webp/530856524_773197938984674_2051145255108384575_n..webp', alt: "Wedding Detail 7", offsetY: 100 },
+    { id: 8, src: 'assets/Images/Webp/538974663_1194827259351253_1869848071802504127_n..webp', alt: "Wedding Detail 8", offsetY: 40 },
 
-    { id: 9, src: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?q=80&w=800&auto=format&fit=crop', alt: "Wedding 9", offsetY: 20 },
-    { id: 10, src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop', alt: "Wedding 10", offsetY: 70 },
-    { id: 11, src: 'https://images.unsplash.com/photo-1511285560982-1351c4f63155?q=80&w=800&auto=format&fit=crop', alt: "Wedding 11", offsetY: 120 },
-    { id: 12, src: 'https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=800&auto=format&fit=crop', alt: "Wedding 12", offsetY: 0 },
-
-    { id: 13, src: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=800&auto=format&fit=crop', alt: "Wedding 13", offsetY: 90 },
-    { id: 14, src: 'https://images.unsplash.com/photo-1470376619031-a6791e534bf0?q=80&w=800&auto=format&fit=crop', alt: "Wedding 14", offsetY: 40 },
-    { id: 15, src: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop', alt: "Wedding 15", offsetY: 0 },
-    { id: 16, src: 'https://images.unsplash.com/photo-1481653125770-b78c206c59d4?q=80&w=800&auto=format&fit=crop', alt: "Wedding 16", offsetY: 60 },
+    { id: 9, src: 'assets/Images/Webp/541724757_17993078795825650_6768281024554930109_n..webp', alt: "Wedding Detail 9", offsetY: 20 },
+    { id: 10, src: 'assets/Images/Webp/542618216_17993191325825650_2873766679662235812_n..webp', alt: "Wedding Detail 10", offsetY: 70 },
+    { id: 11, src: 'assets/Images/Webp/545112275_17993923277825650_3693115148974838534_n..webp', alt: "Wedding Detail 11", offsetY: 120 },
+    { id: 12, src: 'assets/Images/Webp/550799572_17994799889825650_6298268683750133622_n..webp', alt: "Wedding Detail 12", offsetY: 0 },
 ];
 
 const Galleria: React.FC = () => {
