@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import ScrollToTop from './components/ScrollToTop';
+import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 import Servizi from './pages/Servizi';
 import Galleria from './pages/Galleria';
@@ -43,6 +44,7 @@ const App: React.FC = () => {
           <Route path="/galleria" element={<Galleria />} />
         </Routes>
         <Footer />
+        <BackToTop />
       </div>
     </Router>
   );

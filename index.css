@@ -4,7 +4,8 @@
 
 /* Custom Base Styles */
 body {
-  cursor: none; /* Hide default cursor for custom cursor */
+  cursor: none;
+  /* Hide default cursor for custom cursor */
   background-color: #F5F2ED;
   color: #2D2926;
   -webkit-font-smoothing: antialiased;
@@ -19,7 +20,8 @@ body {
 }
 
 /* Lenis Scroll Styles */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -37,4 +39,30 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+/* Scroll hint animation */
+@keyframes slideHint {
+
+  0%,
+  100% {
+    transform: translateX(0) translateY(-50%);
+  }
+
+  50% {
+    transform: translateX(8px) translateY(-50%);
+  }
 }

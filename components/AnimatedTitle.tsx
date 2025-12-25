@@ -27,15 +27,22 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({
             lineClass: 'split-line-inner'
         });
 
-        // Wrap each line in a div with overflow hidden
-        splitText.lines?.forEach(line => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'split-line-outer';
-            wrapper.style.overflow = 'hidden';
-            wrapper.style.display = 'block';
-            line.parentNode?.insertBefore(wrapper, line);
-            wrapper.appendChild(line);
-        });
+        // Helper to wrap lines
+        const wrapElements = (elements: HTMLElement[] | null) => {
+            elements?.forEach(line => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'split-line-outer';
+                wrapper.style.overflow = 'hidden';
+                wrapper.style.paddingBottom = '0.5em';
+                wrapper.style.marginBottom = '-0.5em';
+                wrapper.style.display = 'block';
+                line.parentNode?.insertBefore(wrapper, line);
+                wrapper.appendChild(line);
+            });
+        };
+
+        // Initial wrap
+        wrapElements(splitText.lines);
 
         // Animate lines
         const ctx = gsap.context(() => {
@@ -50,12 +57,16 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({
                     start: 'top 90%',
                     toggleActions: 'play none none none',
                 },
+                onComplete: () => {
+                    gsap.set('.split-line-outer', { overflow: 'visible' });
+                }
             });
         }, textRef);
 
         // Re-split on resize
         const handleResize = () => {
             splitText.split({ types: 'lines' });
+            wrapElements(splitText.lines);
         };
 
         window.addEventListener('resize', handleResize);

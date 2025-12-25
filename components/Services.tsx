@@ -70,15 +70,18 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
   const yTo = useRef<gsap.QuickToFunc>();
 
   useEffect(() => {
-    // Only setup GSAP on desktop
-    if (window.innerWidth < 768 || !previewRef.current) return;
+    // Only setup GSAP on desktop (lg and above)
+    if (window.innerWidth < 1024 || !previewRef.current) return;
 
     // Center the element on the cursor
     gsap.set(previewRef.current, { xPercent: -50, yPercent: -50 });
 
-    xTo.current = gsap.quickTo(previewRef.current, "x", { duration: 0.6, ease: "power3" });
-    yTo.current = gsap.quickTo(previewRef.current, "y", { duration: 0.6, ease: "power3" });
+    xTo.current = gsap.quickTo(previewRef.current, "x", { duration: 0.1, ease: "power3" });
+    yTo.current = gsap.quickTo(previewRef.current, "y", { duration: 0.1, ease: "power3" });
 
+    return () => {
+      // Cleanup if needed
+    };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -91,18 +94,28 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
   const handleInteraction = (id: string, type: 'enter' | 'leave' | 'click') => {
     if (type === 'enter') {
       setActiveId(id);
-      // Animate preview in
+      // Animate preview in - faster duration
       if (previewRef.current) {
-        gsap.to(previewRef.current, { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" });
+        gsap.to(previewRef.current, { scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" });
       }
     } else if (type === 'leave') {
       setActiveId(null);
-      // Animate preview out
+      // Animate preview out - faster duration
       if (previewRef.current) {
-        gsap.to(previewRef.current, { scale: 0, opacity: 0, duration: 0.3, ease: "power2.in" });
+        gsap.to(previewRef.current, { scale: 0, opacity: 0, duration: 0.15, ease: "power2.in" });
       }
     } else if (type === 'click') {
       setActiveId(prev => prev === id ? null : id);
+    }
+  };
+
+  // Handle container mouse leave to ensure preview hides
+  const handleContainerLeave = () => {
+    if (window.innerWidth >= 1024) {
+      setActiveId(null);
+      if (previewRef.current) {
+        gsap.to(previewRef.current, { scale: 0, opacity: 0, duration: 0.15, ease: "power2.in" });
+      }
     }
   };
 
@@ -111,15 +124,16 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
 
   return (
     <section
-      className="py-20 px-6 md:px-12 md:py-32 bg-linen relative z-20 overflow-hidden"
+      className="py-20 px-6 lg:px-12 lg:py-32 bg-linen relative z-20 overflow-hidden"
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleContainerLeave}
       ref={containerRef}
     >
       <div className="max-w-[1400px] mx-auto">
         <AnimatedTitle
           tag="h2"
           text="i nostri servizi"
-          className="font-serif text-5xl md:text-7xl mb-12 md:mb-16 text-charcoal"
+          className="font-serif text-5xl lg:text-7xl mb-12 lg:mb-16 text-charcoal"
         />
 
         <div className="flex flex-col border-t border-charcoal/20">
@@ -133,25 +147,25 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 className="group border-b border-charcoal/20 cursor-pointer overflow-hidden relative"
-                onMouseEnter={() => window.innerWidth >= 768 && handleInteraction(service.id, 'enter')}
-                onMouseLeave={() => window.innerWidth >= 768 && handleInteraction(service.id, 'leave')}
-                onClick={() => window.innerWidth < 768 && handleInteraction(service.id, 'click')}
+                onMouseEnter={() => window.innerWidth >= 1024 && handleInteraction(service.id, 'enter')}
+                onMouseLeave={() => window.innerWidth >= 1024 && handleInteraction(service.id, 'leave')}
+                onClick={() => window.innerWidth < 1024 && handleInteraction(service.id, 'click')}
               >
                 {/* Background hover effect (subtle) */}
                 <div className={`absolute inset-0 bg-charcoal/5 transition-transform duration-500 origin-left ${isActive ? 'scale-x-100' : 'scale-x-0'}`} />
 
-                <div className="relative flex flex-col md:flex-row md:items-baseline py-6 md:py-10 px-2 transition-colors duration-300">
+                <div className="relative flex flex-col lg:flex-row lg:items-baseline py-6 lg:py-10 px-2 transition-colors duration-300">
                   {/* Number */}
-                  <div className="text-xs md:text-sm font-sans tracking-widest text-charcoal/50 w-12 md:w-24 mb-2 md:mb-0">
+                  <div className="text-xs lg:text-sm font-sans tracking-widest text-charcoal/50 w-12 lg:w-24 mb-2 lg:mb-0">
                     {service.no}
                   </div>
 
                   {/* Title & Mobile Accordion Indicator */}
                   <div className="flex-1 flex justify-between items-center pr-4">
-                    <h3 className="font-serif text-3xl md:text-5xl text-charcoal italic group-hover:pl-4 transition-all duration-300">
+                    <h3 className="font-serif text-3xl lg:text-5xl text-charcoal italic group-hover:pl-4 transition-all duration-300 leading-tight pb-1">
                       {service.name}
                     </h3>
-                    <div className="md:hidden text-charcoal/60">
+                    <div className="lg:hidden text-charcoal/60">
                       <motion.div
                         animate={{ rotate: isActive ? 45 : 0 }}
                         transition={{ duration: 0.3 }}
@@ -164,7 +178,7 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
                   </div>
 
                   {/* Price */}
-                  <div className="hidden md:block w-32 text-right font-serif text-xl text-charcoal/80">
+                  <div className="hidden lg:block w-32 text-right font-serif text-xl text-charcoal/80">
                     {service.price}
                   </div>
                 </div>
@@ -176,9 +190,9 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="pb-8 pl-0 md:pl-24 max-w-2xl text-charcoal/70 font-sans leading-relaxed text-sm md:text-base pr-4">
+                  <div className="pb-8 pl-0 lg:pl-24 max-w-2xl text-charcoal/70 font-sans leading-relaxed text-sm lg:text-base pr-4">
                     {service.details}
-                    <div className="md:hidden mt-4 text-charcoal font-serif">
+                    <div className="lg:hidden mt-4 text-charcoal font-serif">
                       A partire da {service.price}
                     </div>
                   </div>
@@ -207,7 +221,7 @@ const Services: React.FC<ServicesProps> = ({ isPreview = false }) => {
       {/* GSAP Image Preview (Desktop Only) */}
       <div
         ref={previewRef}
-        className="fixed top-0 left-0 pointer-events-none z-30 hidden md:block overflow-hidden rounded-lg shadow-2xl w-[350px] aspect-[4/3] border-4 border-white/50 opacity-0 scale-0 origin-center"
+        className="fixed top-0 left-0 pointer-events-none z-30 hidden lg:block overflow-hidden rounded-lg shadow-2xl w-[350px] aspect-[4/3] border-4 border-white/50 opacity-0 scale-0 origin-center"
       >
         {activeService && (
           <img

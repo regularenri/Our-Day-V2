@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
+
   const whatsappUrl = "https://wa.me/1234567890"; // Replace with actual number
 
   const navLinks = [
@@ -39,10 +51,13 @@ const Navbar: React.FC = () => {
   return (
     <>
       <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 w-full px-6 py-6 md:px-12 md:py-8 flex justify-between items-center z-50 text-charcoal pointer-events-none"
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="fixed top-0 w-full px-6 py-6 md:px-12 md:py-8 flex justify-between items-center z-[60] text-charcoal pointer-events-none"
       >
         <div className="pointer-events-auto">
           <Link to="/" className="font-serif text-2xl md:text-3xl italic font-bold tracking-tight text-charcoal mix-blend-normal">
@@ -69,23 +84,23 @@ const Navbar: React.FC = () => {
             Contattaci
           </a>
 
-          {/* Mobile Burger Button */}
+          {/* Mobile Burger Button - Improved touch target and z-index */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none"
+            className="md:hidden flex flex-col justify-center items-center w-11 h-11 gap-1.5 focus:outline-none relative z-[70]"
             aria-label="Menu"
           >
             <motion.span
-              animate={isOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-              className="w-full h-0.5 bg-charcoal"
+              animate={isOpen ? { rotate: 45, y: 7, backgroundColor: "#F5F2ED" } : { rotate: 0, y: 0, backgroundColor: "#2D2926" }}
+              className="w-8 h-0.5"
             />
             <motion.span
               animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="w-full h-0.5 bg-charcoal"
+              className="w-8 h-0.5 bg-charcoal"
             />
             <motion.span
-              animate={isOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-              className="w-full h-0.5 bg-charcoal"
+              animate={isOpen ? { rotate: -45, y: -7, backgroundColor: "#F5F2ED" } : { rotate: 0, y: 0, backgroundColor: "#2D2926" }}
+              className="w-8 h-0.5"
             />
           </button>
         </div>
